@@ -43,8 +43,9 @@ export function computeRankings(date: string): void {
           `;
           params = [now, date];
         } else {
-          // Compare current stars with N days ago
-          const pastDate = getDateNDaysAgo(date, deltaDays);
+          // Compare current stars with closest available past date
+          const targetPastDate = getDateNDaysAgo(date, deltaDays);
+          const pastDate = findClosestSnapshotDate(db, targetPastDate) || targetPastDate;
           query = `
             INSERT INTO rankings (language, period, rank, repo_id, stars, delta, computed_at)
             SELECT
@@ -76,7 +77,8 @@ export function computeRankings(date: string): void {
           `;
           params = [language, now, date, language];
         } else {
-          const pastDate = getDateNDaysAgo(date, deltaDays);
+          const targetPastDate = getDateNDaysAgo(date, deltaDays);
+          const pastDate = findClosestSnapshotDate(db, targetPastDate) || targetPastDate;
           query = `
             INSERT INTO rankings (language, period, rank, repo_id, stars, delta, computed_at)
             SELECT
@@ -111,4 +113,19 @@ function getDateNDaysAgo(dateStr: string, days: number): string {
   const d = new Date(dateStr);
   d.setDate(d.getDate() - days);
   return d.toISOString().split('T')[0];
+}
+
+// Find the closest available snapshot date to the target date
+function findClosestSnapshotDate(db: any, targetDate: string): string | null {
+  // Try on or before first
+  const before = db.prepare(
+    'SELECT date FROM star_snapshots WHERE date <= ? ORDER BY date DESC LIMIT 1'
+  ).get(targetDate) as any;
+  if (before?.date) return before.date;
+
+  // Fallback to earliest available
+  const earliest = db.prepare(
+    'SELECT date FROM star_snapshots ORDER BY date ASC LIMIT 1'
+  ).get() as any;
+  return earliest?.date || null;
 }

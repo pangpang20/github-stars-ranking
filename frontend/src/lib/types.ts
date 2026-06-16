@@ -47,6 +47,7 @@ export interface RankingResult extends Ranking {
   html_url: string | null;
   forks_count: number;
   open_issues: number;
+  star_history?: StarHistoryPoint[];
 }
 
 export interface ApiResponse<T> {

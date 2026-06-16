@@ -48,13 +48,27 @@ router.get('/rankings', (req: Request, res: Response) => {
     const rows = db.prepare(`
       SELECT r.language, r.period, r.rank, r.repo_id, r.stars, r.delta, r.computed_at,
              repos.full_name, repos.description, repos.language as repo_language,
-             repos.avatar_url, repos.html_url, repos.forks_count, repos.open_issues
+             repos.avatar_url, repos.html_url, repos.forks_count, repos.open_issues,
+             (SELECT json_group_array(json_object('date', ss.date, 'stars', ss.stars))
+              FROM (SELECT date, stars FROM star_snapshots WHERE repo_id = r.repo_id ORDER BY date DESC LIMIT 30) ss
+             ) as star_history
       FROM rankings r
       JOIN repos ON r.repo_id = repos.id
       WHERE r.language = ? AND r.period = ?
       ORDER BY r.rank
       LIMIT ? OFFSET ?
-    `).all(language, period, perPage, offset) as RankingResult[];
+    `).all(language, period, perPage, offset) as any[];
+
+    // Parse star_history JSON string
+    for (const row of rows) {
+      if (typeof row.star_history === 'string') {
+        try {
+          row.star_history = JSON.parse(row.star_history);
+        } catch {
+          row.star_history = [];
+        }
+      }
+    }
 
     const totalRow = db.prepare(
       'SELECT COUNT(*) as c FROM rankings WHERE language = ? AND period = ?'

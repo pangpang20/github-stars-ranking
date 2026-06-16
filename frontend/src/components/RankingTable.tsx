@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import type { RankingResult } from '../lib/types';
 import { LANGUAGE_COLORS } from '../lib/constants';
+import { Sparkline } from './Sparkline';
 
 interface RankingTableProps {
   data: RankingResult[];
@@ -90,6 +91,9 @@ export function RankingTable({ data, period }: RankingTableProps) {
             >
               {periodLabel}<SortIcon column="delta" />
             </th>
+            <th className="text-center py-3 px-4 text-sm font-medium text-github-muted hidden md:table-cell">
+              Trend
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -153,6 +157,11 @@ export function RankingTable({ data, period }: RankingTableProps) {
                   }`}>
                     {row.delta > 0 ? '+' : ''}{formatNumber(row.delta)}
                   </span>
+                </td>
+                <td className="py-3 px-4 hidden md:table-cell">
+                  <div className="flex justify-center">
+                    <Sparkline data={row.star_history || []} />
+                  </div>
                 </td>
               </tr>
             );

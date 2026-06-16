@@ -8,8 +8,8 @@ export const CONFIG = {
   ghTokens: (process.env.GH_TOKENS || '').split(',').filter(Boolean),
   graphqlBatchSize: 50,
   searchPerPage: 100,
-  maxSearchPages: 3,       // 3 pages * 100 per page = 300 results per query
-  discoveryDelay: 2000,    // 2s between search API calls (30/min limit)
+  maxSearchPages: 10,      // 10 pages * 100 per page = 1000 results per query
+  discoveryDelay: 2500,    // 2.5s between search API calls
   trendingDelay: 1500,     // 1.5s between trending page scrapes
   rateLimitBuffer: 100,
 };

@@ -122,7 +122,7 @@ export function Languages() {
   if (isLoading) return <Loading />;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex gap-6">
         {/* Left sidebar - Language tree */}
         <aside className="w-64 flex-shrink-0">

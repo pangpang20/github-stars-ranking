@@ -3,6 +3,38 @@
 @tailwind utilities;
 
 @layer base {
+  /* Light theme */
+  :root {
+    --color-bg: #ffffff;
+    --color-surface: #f6f8fa;
+    --color-border: #d0d7de;
+    --color-text: #1f2328;
+    --color-muted: #656d76;
+    --color-accent: #0969da;
+    --color-green: #1a7f37;
+    --color-red: #cf222e;
+    --color-orange: #9a6700;
+    --color-accent-rgb: 9, 105, 218;
+    --color-green-rgb: 26, 127, 55;
+    --color-red-rgb: 207, 34, 46;
+  }
+
+  /* Dark theme */
+  .dark {
+    --color-bg: #0d1117;
+    --color-surface: #161b22;
+    --color-border: #30363d;
+    --color-text: #c9d1d9;
+    --color-muted: #8b949e;
+    --color-accent: #58a6ff;
+    --color-green: #3fb950;
+    --color-red: #f85149;
+    --color-orange: #d29922;
+    --color-accent-rgb: 88, 166, 255;
+    --color-green-rgb: 63, 185, 80;
+    --color-red-rgb: 248, 81, 73;
+  }
+
   body {
     @apply bg-github-bg text-github-text antialiased;
   }
@@ -48,14 +80,17 @@
   }
 
   .badge-language {
-    @apply bg-github-accent/20 text-github-accent;
+    background-color: rgba(var(--color-accent-rgb), 0.2);
+    color: var(--color-accent);
   }
 
   .badge-delta-positive {
-    @apply bg-github-green/20 text-github-green;
+    background-color: rgba(var(--color-green-rgb), 0.2);
+    color: var(--color-green);
   }
 
   .badge-delta-negative {
-    @apply bg-github-red/20 text-github-red;
+    background-color: rgba(var(--color-red-rgb), 0.2);
+    color: var(--color-red);
   }
 }
