@@ -39,7 +39,6 @@ export function computeRankings(date: string): void {
             FROM star_snapshots ss
             WHERE ss.date = ?
             ORDER BY ss.stars DESC
-            LIMIT 1000
           `;
           params = [now, date];
         } else {
@@ -57,7 +56,6 @@ export function computeRankings(date: string): void {
             LEFT JOIN star_snapshots ss_past ON ss_curr.repo_id = ss_past.repo_id AND ss_past.date = ?
             WHERE ss_curr.date = ?
             ORDER BY (ss_curr.stars - COALESCE(ss_past.stars, 0)) DESC
-            LIMIT 1000
           `;
           params = [period, now, pastDate, date];
         }
@@ -73,7 +71,6 @@ export function computeRankings(date: string): void {
             JOIN repos r ON r.id = ss.repo_id
             WHERE ss.date = ? AND r.language = ?
             ORDER BY ss.stars DESC
-            LIMIT 1000
           `;
           params = [language, now, date, language];
         } else {
@@ -91,7 +88,6 @@ export function computeRankings(date: string): void {
             JOIN repos r ON r.id = ss_curr.repo_id
             WHERE ss_curr.date = ? AND r.language = ?
             ORDER BY (ss_curr.stars - COALESCE(ss_past.stars, 0)) DESC
-            LIMIT 1000
           `;
           params = [language, period, now, pastDate, date, language];
         }
