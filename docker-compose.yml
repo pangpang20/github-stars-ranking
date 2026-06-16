@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.server
+    ports:
+      - "${PORT:-3000}:3000"
+    volumes:
+      - db-data:/app/data
+    environment:
+      - PORT=3000
+      - DB_PATH=/app/data/github-stars.db
+      - NODE_ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/stats"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  collector:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.collector
+    volumes:
+      - db-data:/app/data
+    environment:
+      - GH_TOKENS=${GH_TOKENS:-}
+      - DB_PATH=/app/data/github-stars.db
+    # Run collection on a schedule using crond
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        # Install cron
+        apk add --no-cache dcron
+
+        # Create cron job: run trending collection every 6 hours
+        echo "0 */6 * * * cd /app && pnpm --filter collector run collect:trending >> /app/data/collector.log 2>&1" > /var/spool/cron/crontabs/root
+        # Run daily collection at 3am
+        echo "0 3 * * * cd /app && pnpm --filter collector run collect:daily >> /app/data/collector.log 2>&1" >> /var/spool/cron/crontabs/root
+
+        # Run initial collection
+        echo "Running initial collection..."
+        cd /app && pnpm --filter collector run collect:trending
+
+        # Start cron in foreground
+        echo "Starting cron scheduler..."
+        crond -f -l 2
+    restart: unless-stopped
+
+volumes:
+  db-data:

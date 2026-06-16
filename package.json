@@ -1,0 +1,23 @@
+{
+  "name": "github-stars-ranking",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Real-time GitHub Stars Ranking by language and growth",
+  "scripts": {
+    "dev": "pnpm --filter frontend dev",
+    "dev:server": "pnpm --filter server dev",
+    "dev:all": "concurrently \"pnpm --filter server dev\" \"pnpm --filter frontend dev\"",
+    "build": "pnpm --filter frontend build && pnpm --filter server build",
+    "collect:trending": "pnpm --filter collector run collect:trending",
+    "collect:daily": "pnpm --filter collector run collect:daily",
+    "start": "docker-compose up -d --build",
+    "stop": "docker-compose down"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "dependencies": {
+    "pnpm": "^11.6.0"
+  }
+}

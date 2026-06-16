@@ -1,0 +1,8 @@
+name = "github-stars"
+compatibility_date = "2026-01-01"
+pages_build_output_dir = "frontend/dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "github-stars"
+database_id = "YOUR_D1_DATABASE_ID"

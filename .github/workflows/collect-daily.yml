@@ -1,0 +1,46 @@
+name: Daily Full Snapshot
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # 03:00 UTC daily
+  workflow_dispatch:
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --filter collector --filter shared
+
+      - name: Download previous database
+        uses: actions/download-artifact@v4
+        with:
+          name: github-stars-db
+          path: ./data/
+        continue-on-error: true
+
+      - name: Run daily collection
+        env:
+          GH_TOKENS: ${{ secrets.GH_TOKEN_1 }},${{ secrets.GH_TOKEN_2 }},${{ secrets.GH_TOKEN_3 }}
+          DB_PATH: ./data/github-stars.db
+        run: pnpm --filter collector run collect:daily
+
+      - name: Upload database artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-stars-db
+          path: ./data/github-stars.db
+          retention-days: 2
+          overwrite: true

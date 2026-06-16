@@ -1,0 +1,21 @@
+{
+  "name": "collector",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "collect:trending": "tsx src/index.ts --mode=trending",
+    "collect:daily": "tsx src/index.ts --mode=daily",
+    "build": "tsc",
+    "dev": "tsx src/index.ts --mode=trending"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "cheerio": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.5.0"
+  }
+}

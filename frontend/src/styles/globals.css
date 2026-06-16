@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-github-bg text-github-text antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-github-bg;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-github-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-github-muted;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-github-surface border border-github-border rounded-lg;
+  }
+
+  .btn-primary {
+    @apply bg-github-accent text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity;
+  }
+
+  .btn-ghost {
+    @apply px-4 py-2 rounded-md text-github-muted hover:text-github-text hover:bg-github-surface transition-colors;
+  }
+
+  .input {
+    @apply bg-github-surface border border-github-border rounded-md px-3 py-2 text-github-text
+           placeholder-github-muted focus:outline-none focus:border-github-accent transition-colors;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-language {
+    @apply bg-github-accent/20 text-github-accent;
+  }
+
+  .badge-delta-positive {
+    @apply bg-github-green/20 text-github-green;
+  }
+
+  .badge-delta-negative {
+    @apply bg-github-red/20 text-github-red;
+  }
+}
