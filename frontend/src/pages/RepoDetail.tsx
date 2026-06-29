@@ -1,14 +1,11 @@
 import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
 import { useRepo } from '../hooks/useRepo';
-import { StarChart } from '../components/StarChart';
 import { Loading } from '../components/Loading';
 import { LANGUAGE_COLORS } from '../lib/constants';
 
 export function RepoDetail() {
   const { owner, name } = useParams<{ owner: string; name: string }>();
-  const [days, setDays] = useState(90);
-  const { data, isLoading, error } = useRepo(owner || '', name || '', days);
+  const { data, isLoading, error } = useRepo(owner || '', name || '', 90);
 
   if (isLoading) return <Loading />;
   if (error || !data?.data) {
@@ -67,16 +64,26 @@ export function RepoDetail() {
                 <span>📅 Created {new Date(repo.created_at).toLocaleDateString()}</span>
               )}
             </div>
-            {repo.html_url && (
+            <div className="flex items-center gap-4 mt-3">
+              {repo.html_url && (
+                <a
+                  href={repo.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-github-accent hover:underline"
+                >
+                  View on GitHub →
+                </a>
+              )}
               <a
-                href={repo.html_url}
+                href={`https://www.star-history.com/${repo.full_name}#history`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block mt-3 text-sm text-github-accent hover:underline"
+                className="text-sm text-github-accent hover:underline"
               >
-                View on GitHub →
+                ⭐ Star History →
               </a>
-            )}
+            </div>
           </div>
         </div>
       </div>
@@ -101,26 +108,17 @@ export function RepoDetail() {
       </div>
 
       {/* Star History Chart */}
-      <div className="card p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">Star History</h2>
-          <div className="flex items-center gap-2">
-            {[30, 90, 180, 365].map((d) => (
-              <button
-                key={d}
-                onClick={() => setDays(d)}
-                className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                  days === d
-                    ? 'bg-github-accent text-white'
-                    : 'text-github-muted hover:text-github-text'
-                }`}
-              >
-                {d}d
-              </button>
-            ))}
-          </div>
-        </div>
-        <StarChart data={repo.star_history} height={350} />
+      <div className="card overflow-hidden">
+        <h2 className="text-lg font-semibold p-6 pb-2">Star History</h2>
+        <iframe
+          src={`https://api.star-history.com/svg?repos=${owner}/${name}&type=Date`}
+          width="100%"
+          height="600"
+          style={{ minHeight: '500px' }}
+          frameBorder="0"
+          scrolling="no"
+          title={`${repo.full_name} Star History`}
+        />
       </div>
     </div>
   );
